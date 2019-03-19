@@ -1,0 +1,30 @@
+{
+  "name": "react-useform-with-factory-combined",
+  "version": "1.0.0",
+  "description": "An experiment to generate a form based on a yup schema. Currently supports default HTML Inputs and react-datepicker",
+  "keywords": [],
+  "main": "src/index.js",
+  "dependencies": {
+    "dayjs": "1.8.10",
+    "react": "16.8.3",
+    "react-datepicker": "2.1.0",
+    "react-dom": "16.8.3",
+    "react-highlight": "0.12.0",
+    "react-material-tabs": "0.0.8",
+    "react-scripts": "2.0.3",
+    "yup": "0.26.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
