@@ -1,9 +1,6 @@
 import React from 'react'
 import Highlight from 'react-highlight'
 
-import Form from './Form'
-import schema from '../schemas/codeExampleSchema'
-
 function CodeExample() {
   return (
     <div className="App">
@@ -37,6 +34,7 @@ function CodeExample() {
   })`}
       </Highlight>
       <br />
+
       <p>2. Create an onSubmit handler for the form</p>
       <Highlight className="javascript">
         {`  function onSubmit(form, values) {
@@ -45,19 +43,68 @@ function CodeExample() {
 `}
       </Highlight>
       <br />
-      <p>3. Pass the schema and onSubmit handler to the form as props</p>
-      <Highlight className="javascript">
+
+      <p>
+        3a. Pass the schema and onSubmit handler to the form as props. By
+        default the form will be generated from the schema provided.
+      </p>
+      <Highlight className="html">
         {`  <Form name="myFirstForm" schema={schema} onSubmit={onSubmit} />
 `}
       </Highlight>
-      <Form name="secondForm" schema={schema} onSubmit={onSubmit} />
+      <br />
+
+      <p>
+        3b. You can also provide a function as the form child if you want to
+        override the use of the form factory. You'll have access to the
+        following
+        <ul>
+          <li>
+            refs - in form of refs.inputname, see example below. Attach a ref to
+            enable auto focus for errors etc{' '}
+          </li>
+          <li>values - the current field values</li>
+          <li>errors - the errors from yup validation</li>
+          <li>handleChange - call to trigger the yup validation logic</li>
+        </ul>
+      </p>
+      <Highlight className="html">
+        {`  <Form name="myFirstForm" schema={schema} onSubmit={onSubmit}>
+    {(errors, handleChange, refs) => (
+      <>
+        <label htmlFor="name">
+          Name
+          <input
+            type="text"
+            id="name"
+            ref={refs.name}
+            name="name"
+            onChange={e => handleChange('name', e.target.value)}
+          />
+          <span className="errors">{errors['name']}</span>
+        </label>
+        <div className="checkbox-wrapper">
+          <input
+            type="checkbox"
+            id="agree"
+            name="agree"
+            onChange={e => handleChange('agree', Boolean(e.target.checked))}
+            ref={refs.agree}
+          />
+          <label htmlFor="agree">
+            Agree my terms
+            <br />
+          </label>
+          <span className="errors">{errors['agree']}</span>
+        </div>
+      </>
+    )}
+  </Form>
+`}
+      </Highlight>
+      <br />
     </div>
   )
-}
-
-function onSubmit(form, values) {
-  console.log(form, values)
-  alert('Form submitted: ' + form + '\n' + JSON.stringify(values, null, 2))
 }
 
 export default CodeExample

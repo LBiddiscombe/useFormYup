@@ -5,6 +5,7 @@ import { TabGroup, Tab } from 'react-material-tabs'
 
 import Form from './components/Form'
 import CodeExample from './components/CodeExample'
+import FormRenderProps from './components/FormRenderProps'
 import './clmaterial.css'
 import './styles.css'
 
@@ -16,7 +17,8 @@ function App() {
     <div className="App">
       <TabGroup>
         <Tab onClick={e => setTab(1)}>Example</Tab>
-        <Tab onClick={e => setTab(2)}>Code</Tab>
+        <Tab onClick={e => setTab(2)}>Docs</Tab>
+        <Tab onClick={e => setTab(3)}>Render Prop Example</Tab>
       </TabGroup>
       {tab === 1 && (
         <div>
@@ -25,6 +27,7 @@ function App() {
         </div>
       )}
       {tab === 2 && <CodeExample />}
+      {tab === 3 && <FormRenderProps />}
     </div>
   )
 }

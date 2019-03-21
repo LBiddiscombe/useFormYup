@@ -1,10 +1,51 @@
-import { useState } from 'react'
+import React, { useState, useEffect, useLayoutEffect, createRef } from 'react'
 import * as yup from 'yup'
+import formFactory from './formFactory'
 
-const useForm = (callback, schema) => {
+const useForm = (children, schema, callback) => {
   const [values, setValues] = useState({})
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [fields, setFields] = useState()
+  const [refs, setRefs] = useState()
+
+  // on first pass parse schema and generate
+  // 1. build the refs to the objects in the schema
+  // 2. generate the input fields
+  // Note: useLayoutEffect as this will impact the DOM.
+  // useEffect causes a flicker before fields built
+  useLayoutEffect(
+    () => {
+      let refs = {}
+      schema._nodes.forEach(name => {
+        refs[name] = createRef()
+      })
+      setRefs(refs)
+      if (children) {
+        const childInputs = children
+          ? React.Children.toArray(children(errors, handleChange, refs))
+          : null
+        setFields(childInputs)
+      } else setFields(formFactory(schema, values, errors, handleChange, refs))
+    },
+    [schema, errors]
+  )
+
+  // if we have any errors set focus to the first error field
+  useLayoutEffect(
+    () => {
+      if (isSubmitting && Object.keys(errors).length > 0 && errors[Object.keys(errors)[0]]) {
+        const ref = refs[Object.keys(errors)[0]]
+        console.log(`Form validation errors found, setting focus to "${Object.keys(errors)[0]}"`)
+        if (ref.current) {
+          if (ref.current.input) {
+            ref.current.input.focus()
+          } else if (ref.current) ref.current.focus()
+        }
+      }
+    },
+    [errors]
+  )
 
   const handleSubmit = (name, event) => {
     if (event) {
@@ -24,17 +65,17 @@ const useForm = (callback, schema) => {
     fieldschema
       .validate(value)
       .then(() => setErrors({ ...errors, [name]: '' }))
-      .catch(err => {
-        setErrors({ ...errors, [name]: err.errors[0] })
-      })
+      .catch(err => setErrors({ ...errors, [name]: err.errors[0] }))
   }
 
   return {
-    handleSubmit,
-    handleChange,
+    fields,
     values,
     errors,
-    isSubmitting
+    handleSubmit,
+    handleChange,
+    isSubmitting,
+    refs
   }
 }
 
